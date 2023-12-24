@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "957936378862",
+    "project_id": "bakaiti-eacbc",
+    "storage_bucket": "bakaiti-eacbc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957936378862:android:3e08f476980a3657f664ff",
+        "android_client_info": {
+          "package_name": "com.example.baikaiti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTxdU2_2hSddiY2pLlwwCsPIlU3jY-gcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
