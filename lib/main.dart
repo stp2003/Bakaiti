@@ -1,4 +1,4 @@
-import 'package:baikaiti/screen/auth/home_screen.dart';
+import 'package:baikaiti/screen/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/colors.dart';
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }

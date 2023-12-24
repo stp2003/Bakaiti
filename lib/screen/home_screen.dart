@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
+import '../constants/colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,7 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     //?? for updating the search list when it's changed ->
                     onChanged: (val) {},
                   )
-                : const Text('बकैती'),
+                : const Text(
+                    'बकैती',
+                    style: TextStyle(
+                      fontFamily: 'poppins_bold',
+                      fontSize: 18.0,
+                      color: Colors.white,
+                    ),
+                  ),
             actions: [
               IconButton(
                 onPressed: () {
