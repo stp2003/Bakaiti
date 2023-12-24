@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../auth/auth.dart';
 import 'auth/login_screen.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,12 +23,21 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 4),
       () {
         //?? for checking if user is already logged in or not ->
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const LoginScreen(),
-          ),
-        );
+        if (Auth.auth.currentUser != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+            ),
+          );
+        }
       },
     );
     Future.delayed(

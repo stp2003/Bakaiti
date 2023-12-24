@@ -12,7 +12,20 @@
           "package_name": "com.example.baikaiti"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "957936378862-tnbtng2ge5ibo3qenb3gjsk7ubdv7529.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.baikaiti",
+            "certificate_hash": "09935af56a393f8e3ac574ecd1c22113a11c45c9"
+          }
+        },
+        {
+          "client_id": "957936378862-6dkglvsfpvjv160dqi5sdlf00k7cdtod.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBTxdU2_2hSddiY2pLlwwCsPIlU3jY-gcM"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957936378862-6dkglvsfpvjv160dqi5sdlf00k7cdtod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957936378862-img0d6r2m8v7k5098l1jfobivg4d076f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.baikaiti"
+              }
+            }
+          ]
         }
       }
     }
