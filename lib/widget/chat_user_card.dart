@@ -1,4 +1,5 @@
 import 'package:baikaiti/models/chat_user.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,11 +38,20 @@ class _ChatUserCardState extends State<ChatUserCard> {
         onTap: () {},
         child: ListTile(
           //?? for profile pic ->
-          leading: const CircleAvatar(
-            backgroundColor: appBarColor,
-            child: Icon(
-              CupertinoIcons.person,
-              color: Colors.white,
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0),
+            child: CachedNetworkImage(
+              width: size.height * 0.055,
+              height: size.height * 0.055,
+              imageUrl: widget.user.image,
+              errorWidget: (context, url, error) => const CircleAvatar(
+                backgroundColor: appBarColor,
+                child: Icon(
+                  CupertinoIcons.person,
+                  color: Colors.white,
+                ),
+              ),
+              fit: BoxFit.cover,
             ),
           ),
 
@@ -70,13 +80,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
           ),
 
           //?? for last message time sent ->
-          trailing: const Text(
-            '12.00 AM',
-            style: TextStyle(
-              fontFamily: 'poppins',
-              fontSize: 14.0,
-              letterSpacing: 0.8,
-              color: Colors.white60,
+          trailing: Container(
+            width: 15.0,
+            height: 15.0,
+            decoration: BoxDecoration(
+              color: Colors.greenAccent.shade400,
+              borderRadius: BorderRadius.circular(10.0),
             ),
           ),
         ),
