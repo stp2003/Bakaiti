@@ -1,11 +1,15 @@
+import 'package:baikaiti/models/chat_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 
 class ChatUserCard extends StatefulWidget {
+  final ChatUser user;
+
   const ChatUserCard({
     Key? key,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -31,9 +35,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
       child: InkWell(
         splashColor: Colors.lightGreen,
         onTap: () {},
-        child: const ListTile(
+        child: ListTile(
           //?? for profile pic ->
-          leading: CircleAvatar(
+          leading: const CircleAvatar(
             backgroundColor: appBarColor,
             child: Icon(
               CupertinoIcons.person,
@@ -43,10 +47,10 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
           //?? for name of user ->
           title: Text(
-            'widget.user.name',
-            style: TextStyle(
+            widget.user.name,
+            style: const TextStyle(
               fontFamily: 'poppins_bold',
-              fontSize: 18.0,
+              fontSize: 16.0,
               letterSpacing: 0.8,
               color: Colors.white,
             ),
@@ -54,11 +58,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
           //?? for last message ->
           subtitle: Text(
-            'widget.user.about',
+            widget.user.about,
             maxLines: 1,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'poppins_medium',
-              fontSize: 15.0,
+              fontSize: 14.0,
               letterSpacing: 0.8,
               color: Colors.white70,
               overflow: TextOverflow.ellipsis,
@@ -66,7 +70,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
           ),
 
           //?? for last message time sent ->
-          trailing: Text(
+          trailing: const Text(
             '12.00 AM',
             style: TextStyle(
               fontFamily: 'poppins',

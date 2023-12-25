@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:baikaiti/auth/auth.dart';
 import 'package:baikaiti/widget/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../constants/colors.dart';
+import '../models/chat_user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ChatUser> list = [];
   bool _isSearching = false;
 
   @override
@@ -101,20 +101,48 @@ class _HomeScreenState extends State<HomeScreen> {
           body: StreamBuilder(
             stream: Auth.firestore.collection('users').snapshots(),
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final data = snapshot.data?.docs;
-                for (var i in data!) {
-                  log("Data: ${i.data()}");
-                }
+              //*** for checking connection state ->
+              switch (snapshot.connectionState) {
+                //*** if data is loading ->
+                case ConnectionState.waiting:
+                case ConnectionState.none:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+
+                //*** if data loaded ->
+                case ConnectionState.active:
+                case ConnectionState.done:
+                  final data = snapshot.data?.docs;
+                  list =
+                      data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                          [];
+
+                  if (list.isNotEmpty) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 8.0),
+                      itemCount: list.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return ChatUserCard(
+                          user: list[index],
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                        'No Connections Found!!',
+                        style: TextStyle(
+                          fontFamily: 'poppins',
+                          fontSize: 20.0,
+                          letterSpacing: 0.8,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
               }
-              return ListView.builder(
-                itemCount: 10,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(top: size.height * 0.01),
-                itemBuilder: (context, index) {
-                  return const ChatUserCard();
-                },
-              );
             },
           ),
         ),
