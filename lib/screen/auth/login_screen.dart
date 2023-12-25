@@ -50,12 +50,25 @@ class _LoginScreenState extends State<LoginScreen> {
           log('\nUser: ${user.user}');
           log('\nAdditional User: ${user.additionalUserInfo}');
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const HomeScreen(),
-            ),
-          );
+          if ((await Auth.userExists())) {
+            if (!context.mounted) return;
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => const HomeScreen(),
+              ),
+            );
+          } else {
+            await Auth.createUsers().then(
+              (value) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const HomeScreen(),
+                  ),
+                );
+              },
+            );
+          }
         }
       },
     );
