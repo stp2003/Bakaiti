@@ -1,4 +1,5 @@
 import 'package:baikaiti/auth/auth.dart';
+import 'package:baikaiti/screen/profile_screen.dart';
 import 'package:baikaiti/widget/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<ChatUser> list = [];
   bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Auth.getSelfInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +79,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ProfileScreen(
+                        user: Auth.me,
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.more_vert_sharp,
                 ),
@@ -99,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           //?? body ->
           body: StreamBuilder(
-            stream: Auth.firestore.collection('users').snapshots(),
+            stream: Auth.getAllUsers(),
             builder: (context, snapshot) {
               //*** for checking connection state ->
               switch (snapshot.connectionState) {
