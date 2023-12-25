@@ -1,3 +1,4 @@
+import 'package:baikaiti/widget/chat_user_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //*** media query ->
+    final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -91,6 +95,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           //?? body ->
+          body: ListView.builder(
+            itemCount: 10,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.only(top: size.height * 0.01),
+            itemBuilder: (context, index) {
+              return const ChatUserCard();
+            },
+          ),
         ),
       ),
     );
