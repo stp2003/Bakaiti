@@ -85,24 +85,20 @@ class Auth {
     final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
 
     //*** uploading image ->
-    await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-        .then((p0) {
-      log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
-    });
+    await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then(
+      (p0) {
+        log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+      },
+    );
 
     //*** updating image in firestore database ->
     me.image = await ref.getDownloadURL();
-    await firestore
-        .collection('users')
-        .doc(user.uid)
-        .update({'image': me.image});
+    await firestore.collection('users').doc(user.uid).update(
+      {
+        'image': me.image,
+      },
+    );
   }
 
   //!! ------------------------------------------------------------------------------------------------------------------------------------
-
-  //?? for getting all messages ->
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
-    return firestore.collection('messages').snapshots();
-  }
 }
