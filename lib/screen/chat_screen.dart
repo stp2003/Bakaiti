@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +9,6 @@ import '../models/message.dart';
 import '../widget/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
-  //**
   final ChatUser user;
 
   const ChatScreen({
@@ -26,6 +22,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> list = [];
+  final textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: StreamBuilder(
-                stream: Auth.getAllMessages(),
+                stream: Auth.getAllMessages(widget.user),
                 builder: (context, snapshot) {
                   //*** for checking connection state ->
                   switch (snapshot.connectionState) {
@@ -56,28 +53,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     case ConnectionState.active:
                     case ConnectionState.done:
                       final data = snapshot.data?.docs;
-                      log('Data:  ${jsonEncode(data![0].data())}');
-                      list.clear();
-                      list.add(
-                        Message(
-                          toId: 'xyz',
-                          msg: 'Hello There',
-                          read: '',
-                          type: Type.text,
-                          fromId: Auth.user.uid,
-                          sent: '12.00 AM',
-                        ),
-                      );
-                      list.add(
-                        Message(
-                          toId: Auth.user.uid,
-                          msg: 'General Kenobi',
-                          read: '',
-                          type: Type.text,
-                          fromId: 'xyz',
-                          sent: '12.05 AM',
-                        ),
-                      );
+                      list = data
+                              ?.map((e) => Message.fromJson(e.data()))
+                              .toList() ??
+                          [];
 
                       if (list.isNotEmpty) {
                         return ListView.builder(
@@ -216,13 +195,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   Expanded(
                     child: TextField(
+                      controller: textController,
                       style: const TextStyle(
                         fontFamily: 'poppins_medium',
                         fontSize: 15.0,
                         letterSpacing: 0.8,
                         color: Colors.white,
                       ),
-                      // controller: _textController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       onTap: () {},
@@ -260,7 +239,12 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           //*** send message button ->
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              if (textController.text.isNotEmpty) {
+                Auth.sendMessage(widget.user, textController.text);
+                textController.text = '';
+              }
+            },
             minWidth: 0,
             padding: const EdgeInsets.only(
               top: 10.0,

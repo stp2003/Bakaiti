@@ -5,7 +5,6 @@ import '../constants/colors.dart';
 import '../models/message.dart';
 
 class MessageCard extends StatefulWidget {
-  //**
   final Message message;
 
   const MessageCard({
@@ -49,9 +48,9 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30.0),
               ),
             ),
-            child: const Text(
-              'widget.message.msg',
-              style: TextStyle(
+            child: Text(
+              widget.message.msg,
+              style: const TextStyle(
                 fontFamily: 'poppins_bold',
                 fontSize: 14.0,
                 letterSpacing: 0.8,
@@ -64,9 +63,9 @@ class _MessageCardState extends State<MessageCard> {
         //?? for showing time ->
         Padding(
           padding: EdgeInsets.only(right: size.width * 0.04),
-          child: const Text(
-            '12.00 AM',
-            style: TextStyle(
+          child: Text(
+            widget.message.sent,
+            style: const TextStyle(
               fontFamily: 'poppins_medium',
               fontSize: 11.0,
               letterSpacing: 0.8,
@@ -101,7 +100,7 @@ class _MessageCardState extends State<MessageCard> {
             const SizedBox(width: 5.0),
             //*** for read time ->
             Text(
-              '${widget.message.read}12.00 AM',
+              widget.message.sent,
               style: const TextStyle(
                 fontFamily: 'poppins_medium',
                 fontSize: 11.0,
@@ -129,9 +128,9 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30.0),
               ),
             ),
-            child: const Text(
-              'widget.message.msg',
-              style: TextStyle(
+            child: Text(
+              widget.message.msg,
+              style: const TextStyle(
                 fontFamily: 'poppins_bold',
                 fontSize: 14.0,
                 letterSpacing: 0.8,
