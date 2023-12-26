@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../auth/auth.dart';
 import '../constants/colors.dart';
 import '../models/chat_user.dart';
+import '../models/message.dart';
+import '../widget/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
   //**
@@ -19,6 +25,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  List<Message> list = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,6 +39,75 @@ class _ChatScreenState extends State<ChatScreen> {
         //?? body ->
         body: Column(
           children: [
+            Expanded(
+              child: StreamBuilder(
+                stream: Auth.getAllMessages(),
+                builder: (context, snapshot) {
+                  //*** for checking connection state ->
+                  switch (snapshot.connectionState) {
+                    //*** if data is loading ->
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+
+                    //*** if data loaded ->
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+                      log('Data:  ${jsonEncode(data![0].data())}');
+                      list.clear();
+                      list.add(
+                        Message(
+                          toId: 'xyz',
+                          msg: 'Hello There',
+                          read: '',
+                          type: Type.text,
+                          fromId: Auth.user.uid,
+                          sent: '12.00 AM',
+                        ),
+                      );
+                      list.add(
+                        Message(
+                          toId: Auth.user.uid,
+                          msg: 'General Kenobi',
+                          read: '',
+                          type: Type.text,
+                          fromId: 'xyz',
+                          sent: '12.05 AM',
+                        ),
+                      );
+
+                      if (list.isNotEmpty) {
+                        return ListView.builder(
+                          padding:
+                              const EdgeInsets.only(top: 15.0, bottom: 8.0),
+                          itemCount: list.length,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return MessageCard(
+                              message: list[index],
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: Text(
+                            'Say Hi 👋',
+                            style: TextStyle(
+                              fontFamily: 'poppins',
+                              fontSize: 20.0,
+                              letterSpacing: 0.8,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      }
+                  }
+                },
+              ),
+            ),
             _chatInput(),
           ],
         ),
