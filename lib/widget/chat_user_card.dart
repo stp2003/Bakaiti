@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
+import '../screen/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -35,7 +36,16 @@ class _ChatUserCardState extends State<ChatUserCard> {
       elevation: 15.0,
       child: InkWell(
         splashColor: Colors.lightGreen,
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ChatScreen(
+                user: widget.user,
+              ),
+            ),
+          );
+        },
         child: ListTile(
           //?? for profile pic ->
           leading: ClipRRect(
