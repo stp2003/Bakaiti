@@ -101,4 +101,9 @@ class Auth {
   }
 
   //!! ------------------------------------------------------------------------------------------------------------------------------------
+
+  //?? for getting all messages ->
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+    return firestore.collection('messages').snapshots();
+  }
 }
