@@ -28,8 +28,12 @@ class _ChatScreenState extends State<ChatScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: _appBar(),
         ),
-
         //?? body ->
+        body: Column(
+          children: [
+            _chatInput(),
+          ],
+        ),
       ),
     );
   }
@@ -98,6 +102,103 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  //?? bottom chat input field ->
+  Widget _chatInput() {
+    //*** media query ->
+    final size = MediaQuery.of(context).size;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: size.height * .01,
+        horizontal: size.width * .025,
+      ),
+      child: Row(
+        children: [
+          //*** input field & buttons ->
+          Expanded(
+            child: Card(
+              color: textFieldColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Row(
+                children: [
+                  //*** emoji button ->
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.emoji_emotions_sharp,
+                      color: Colors.white70,
+                      size: 25.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(
+                        fontFamily: 'poppins_medium',
+                        fontSize: 15.0,
+                        letterSpacing: 0.8,
+                        color: Colors.white,
+                      ),
+                      // controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      onTap: () {},
+                      decoration: const InputDecoration(
+                        hintText: 'Likho Kuch...',
+                        hintStyle: TextStyle(
+                          color: Colors.white54,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  //*** pick image from gallery button ->
+                  IconButton(
+                    onPressed: () async {},
+                    icon: const Icon(
+                      Icons.image,
+                      color: Colors.white70,
+                      size: 26.0,
+                    ),
+                  ),
+                  //*** take image from camera button ->
+                  IconButton(
+                    onPressed: () async {},
+                    icon: const Icon(
+                      Icons.camera_alt_sharp,
+                      color: Colors.white70,
+                      size: 26.0,
+                    ),
+                  ),
+                  SizedBox(width: size.width * .02),
+                ],
+              ),
+            ),
+          ),
+          //*** send message button ->
+          MaterialButton(
+            onPressed: () {},
+            minWidth: 0,
+            padding: const EdgeInsets.only(
+              top: 10.0,
+              bottom: 10.0,
+              right: 5.0,
+              left: 10.0,
+            ),
+            shape: const CircleBorder(),
+            color: floatingActionButtonColor,
+            child: const Icon(
+              Icons.send_sharp,
+              color: Colors.white,
+              size: 28.0,
+            ),
+          )
         ],
       ),
     );
