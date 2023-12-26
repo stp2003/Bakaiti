@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../auth/auth.dart';
 import '../constants/colors.dart';
 import '../models/message.dart';
+import '../utils/my_date_util.dart';
 
 class MessageCard extends StatefulWidget {
   final Message message;
@@ -28,7 +29,10 @@ class _MessageCardState extends State<MessageCard> {
   Widget _blueMessage() {
     //*** media query ->
     final size = MediaQuery.of(context).size;
-
+    //*** update last read message if sender and receiver are different
+    if (widget.message.read.isEmpty) {
+      Auth.updateMessageReadStatus(widget.message);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -64,7 +68,10 @@ class _MessageCardState extends State<MessageCard> {
         Padding(
           padding: EdgeInsets.only(right: size.width * 0.04),
           child: Text(
-            widget.message.sent,
+            MyDateUtil.getFormattedTime(
+              context: context,
+              time: widget.message.sent,
+            ),
             style: const TextStyle(
               fontFamily: 'poppins_medium',
               fontSize: 11.0,
@@ -92,15 +99,19 @@ class _MessageCardState extends State<MessageCard> {
               width: size.width * 0.04,
             ),
             //*** for blue tick ->
-            const Icon(
-              Icons.done_all_sharp,
-              color: Colors.blue,
-              size: 20.0,
-            ),
+            if (widget.message.read.isNotEmpty)
+              const Icon(
+                Icons.done_all_sharp,
+                color: Colors.blue,
+                size: 20.0,
+              ),
             const SizedBox(width: 5.0),
             //*** for read time ->
             Text(
-              widget.message.sent,
+              MyDateUtil.getFormattedTime(
+                context: context,
+                time: widget.message.sent,
+              ),
               style: const TextStyle(
                 fontFamily: 'poppins_medium',
                 fontSize: 11.0,
