@@ -8,7 +8,10 @@ import '../utils/my_date_util.dart';
 class ViewProfileScreen extends StatefulWidget {
   final ChatUser user;
 
-  const ViewProfileScreen({super.key, required this.user});
+  const ViewProfileScreen({
+    super.key,
+    required this.user,
+  });
 
   @override
   State<ViewProfileScreen> createState() => _ViewProfileScreenState();

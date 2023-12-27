@@ -1,5 +1,6 @@
 import 'package:baikaiti/auth/auth.dart';
 import 'package:baikaiti/models/chat_user.dart';
+import 'package:baikaiti/widget/profile_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
             return ListTile(
               //*** user profile picture
               leading: InkWell(
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => ProfileDialog(user: widget.user),
+                  );
+                },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: CachedNetworkImage(
