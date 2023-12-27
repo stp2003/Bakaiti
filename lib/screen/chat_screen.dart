@@ -85,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding:
                                   const EdgeInsets.only(top: 15.0, bottom: 8.0),
                               itemCount: list.length,
+                              reverse: true,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return MessageCard(
@@ -109,6 +110,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
                 ),
+                if (isUploading)
+                  const Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                 _chatInput(),
                 if (showEmoji)
                   SizedBox(
@@ -258,7 +268,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   //*** pick image from gallery button ->
                   IconButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      final List<XFile> images =
+                          await picker.pickMultiImage(imageQuality: 70);
+
+                      for (var i in images) {
+                        log('Image Path: ${i.path}');
+                        setState(() => isUploading = true);
+
+                        await Auth.sendChatImage(widget.user, File(i.path));
+                        setState(() => isUploading = false);
+                      }
+                    },
                     icon: const Icon(
                       Icons.image,
                       color: Colors.white70,

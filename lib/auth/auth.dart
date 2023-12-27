@@ -114,7 +114,7 @@ class Auth {
   ) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
-        .orderBy('sent', descending: false)
+        .orderBy('sent', descending: true)
         .snapshots();
   }
 

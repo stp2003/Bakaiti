@@ -41,7 +41,7 @@ class _MessageCardState extends State<MessageCard> {
           child: Container(
             padding: EdgeInsets.all(
               widget.message.type == Type.image
-                  ? size.width * .015
+                  ? size.width * .02
                   : size.width * .04,
             ),
             margin: EdgeInsets.symmetric(
@@ -145,7 +145,7 @@ class _MessageCardState extends State<MessageCard> {
           child: Container(
             padding: EdgeInsets.all(
               widget.message.type == Type.image
-                  ? size.width * .015
+                  ? size.width * .02
                   : size.width * .04,
             ),
             margin: EdgeInsets.symmetric(
