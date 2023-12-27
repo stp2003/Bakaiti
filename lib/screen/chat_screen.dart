@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../auth/auth.dart';
 import '../constants/colors.dart';
@@ -28,6 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final textController = TextEditingController();
 
   bool showEmoji = false;
+  bool isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +267,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   //*** take image from camera button ->
                   IconButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.camera,
+                        imageQuality: 70,
+                      );
+                      if (image != null) {
+                        log('Image Path: ${image.path}');
+                        setState(() => isUploading = true);
+
+                        await Auth.sendChatImage(widget.user, File(image.path));
+                        setState(() => isUploading = false);
+                      }
+                    },
                     icon: const Icon(
                       Icons.camera_alt_sharp,
                       color: Colors.white70,
@@ -280,7 +296,7 @@ class _ChatScreenState extends State<ChatScreen> {
           MaterialButton(
             onPressed: () {
               if (textController.text.isNotEmpty) {
-                Auth.sendMessage(widget.user, textController.text);
+                Auth.sendMessage(widget.user, textController.text, Type.text);
                 textController.text = '';
               }
             },

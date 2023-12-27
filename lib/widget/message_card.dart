@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/auth.dart';
@@ -38,7 +39,11 @@ class _MessageCardState extends State<MessageCard> {
       children: [
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(size.width * 0.04),
+            padding: EdgeInsets.all(
+              widget.message.type == Type.image
+                  ? size.width * .015
+                  : size.width * .04,
+            ),
             margin: EdgeInsets.symmetric(
               horizontal: size.width * .04,
               vertical: size.height * .01,
@@ -52,15 +57,28 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30.0),
               ),
             ),
-            child: Text(
-              widget.message.msg,
-              style: const TextStyle(
-                fontFamily: 'poppins_bold',
-                fontSize: 14.0,
-                letterSpacing: 0.8,
-                color: Colors.white,
-              ),
-            ),
+            child: widget.message.type == Type.text
+                ? Text(
+                    widget.message.msg,
+                    style: const TextStyle(
+                      fontFamily: 'poppins_bold',
+                      fontSize: 14.0,
+                      letterSpacing: 0.8,
+                      color: Colors.white,
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.message.msg,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.image, size: 70),
+                    ),
+                  ),
           ),
         ),
 
@@ -125,7 +143,11 @@ class _MessageCardState extends State<MessageCard> {
         //?? for showing messages ->
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(size.width * 0.04),
+            padding: EdgeInsets.all(
+              widget.message.type == Type.image
+                  ? size.width * .015
+                  : size.width * .04,
+            ),
             margin: EdgeInsets.symmetric(
               horizontal: size.width * .04,
               vertical: size.height * .01,
@@ -139,15 +161,28 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30.0),
               ),
             ),
-            child: Text(
-              widget.message.msg,
-              style: const TextStyle(
-                fontFamily: 'poppins_bold',
-                fontSize: 14.0,
-                letterSpacing: 0.8,
-                color: Colors.white,
-              ),
-            ),
+            child: widget.message.type == Type.text
+                ? Text(
+                    widget.message.msg,
+                    style: const TextStyle(
+                      fontFamily: 'poppins_bold',
+                      fontSize: 14.0,
+                      letterSpacing: 0.8,
+                      color: Colors.white,
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.message.msg,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.image, size: 70),
+                    ),
+                  ),
           ),
         ),
       ],
