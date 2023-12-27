@@ -11,6 +11,7 @@ import '../auth/auth.dart';
 import '../constants/colors.dart';
 import '../models/chat_user.dart';
 import '../models/message.dart';
+import '../utils/my_date_util.dart';
 import '../widget/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -149,63 +150,81 @@ class _ChatScreenState extends State<ChatScreen> {
     return InkWell(
       onTap: () {},
       splashColor: Colors.orange,
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 8.0),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15.0),
-            child: CachedNetworkImage(
-              width: size.height * 0.055,
-              height: size.height * 0.055,
-              imageUrl: widget.user.image,
-              errorWidget: (context, url, error) => const CircleAvatar(
-                backgroundColor: appBarColor,
-                child: Icon(
-                  CupertinoIcons.person,
-                  color: Colors.white,
-                ),
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 15.0),
-
-          //?? for user name ->
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: StreamBuilder(
+        stream: Auth.getUserInfo(widget.user),
+        builder: (context, snapshot) {
+          final data = snapshot.data?.docs;
+          final list =
+              data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+          return Row(
             children: [
-              Text(
-                widget.user.name,
-                style: const TextStyle(
-                  fontFamily: 'poppins_bold',
-                  fontSize: 16.0,
-                  letterSpacing: 0.8,
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.arrow_back,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 4.0),
-
-              //?? for last seen ->
-              const Text(
-                'last seen not available',
-                style: TextStyle(
-                  fontFamily: 'poppins_medium',
-                  fontSize: 12.0,
-                  letterSpacing: 0.8,
-                  color: Colors.white70,
+              const SizedBox(width: 8.0),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: CachedNetworkImage(
+                  width: size.height * 0.055,
+                  height: size.height * 0.055,
+                  imageUrl: list.isNotEmpty ? list[0].image : widget.user.image,
+                  errorWidget: (context, url, error) => const CircleAvatar(
+                    backgroundColor: appBarColor,
+                    child: Icon(
+                      CupertinoIcons.person,
+                      color: Colors.white,
+                    ),
+                  ),
+                  fit: BoxFit.cover,
                 ),
+              ),
+              const SizedBox(width: 15.0),
+
+              //?? for user name ->
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    list.isNotEmpty ? list[0].name : widget.user.name,
+                    style: const TextStyle(
+                      fontFamily: 'poppins_bold',
+                      fontSize: 16.0,
+                      letterSpacing: 0.8,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4.0),
+
+                  //?? for last seen ->
+                  Text(
+                    list.isNotEmpty
+                        ? list[0].isOnline
+                            ? 'Online'
+                            : MyDateUtil.getLastActiveTime(
+                                context: context,
+                                lastActive: list[0].lastActive,
+                              )
+                        : MyDateUtil.getLastActiveTime(
+                            context: context,
+                            lastActive: widget.user.lastActive,
+                          ),
+                    style: const TextStyle(
+                      fontFamily: 'poppins_medium',
+                      fontSize: 12.0,
+                      letterSpacing: 0.8,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

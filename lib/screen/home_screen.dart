@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:baikaiti/auth/auth.dart';
 import 'package:baikaiti/screen/profile_screen.dart';
 import 'package:baikaiti/widget/chat_user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../constants/colors.dart';
 import '../models/chat_user.dart';
@@ -23,6 +26,23 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Auth.getSelfInfo();
+    Auth.updateActiveStatus(true);
+    SystemChannels.lifecycle.setMessageHandler(
+      (message) {
+        log('Message: $message');
+
+        if (Auth.auth.currentUser != null) {
+          if (message.toString().contains('resume')) {
+            Auth.updateActiveStatus(true);
+          }
+          if (message.toString().contains('pause')) {
+            Auth.updateActiveStatus(false);
+          }
+        }
+
+        return Future.value(message);
+      },
+    );
   }
 
   @override
