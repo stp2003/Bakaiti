@@ -1,10 +1,16 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 import '../auth/auth.dart';
 import '../constants/colors.dart';
 import '../models/message.dart';
+import '../utils/dialogs.dart';
 import '../utils/my_date_util.dart';
+import 'option_item.dart';
 
 class MessageCard extends StatefulWidget {
   final Message message;
@@ -19,11 +25,17 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
-    return Auth.user.uid == widget.message.fromId
-        ? _greenMessage()
-        : _blueMessage();
+    bool isMe = Auth.user.uid == widget.message.fromId;
+    return InkWell(
+      onLongPress: () {
+        _showBottomSheet(isMe);
+      },
+      child: isMe ? _greenMessage() : _blueMessage(),
+    );
   }
 
   //?? sender or other user message ->
@@ -186,6 +198,217 @@ class _MessageCardState extends State<MessageCard> {
           ),
         ),
       ],
+    );
+  }
+
+  //?? bottom sheet for modifying message details
+  void _showBottomSheet(bool isMe) {
+    //*** media query ->
+    final size = MediaQuery.of(context).size;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: appBarColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (_) {
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            Container(
+              height: 4,
+              margin: EdgeInsets.symmetric(
+                vertical: size.height * .015,
+                horizontal: size.width * .4,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            widget.message.type == Type.text
+                ?
+                //?? copy option
+                OptionItem(
+                    icon: const Icon(
+                      Icons.copy_all_rounded,
+                      color: Colors.blue,
+                      size: 26,
+                    ),
+                    name: 'Copy Text',
+                    onTap: () async {
+                      await Clipboard.setData(
+                        ClipboardData(text: widget.message.msg),
+                      ).then(
+                        (value) {
+                          Navigator.pop(context);
+                          Dialogs.showSnackBar(context, 'Text Copied!');
+                        },
+                      );
+                    },
+                  )
+                :
+                //?? save option
+                OptionItem(
+                    icon: const Icon(
+                      Icons.download_rounded,
+                      color: Colors.blue,
+                      size: 26,
+                    ),
+                    name: 'Save Image',
+                    onTap: () async {
+                      try {
+                        log('Image Url: ${widget.message.msg}');
+                        await GallerySaver.saveImage(
+                          widget.message.msg,
+                          albumName: 'बकैती',
+                        ).then(
+                          (success) {
+                            Navigator.pop(context);
+                            if (success != null && success) {
+                              Dialogs.showSnackBar(
+                                context,
+                                'Image Successfully Saved!',
+                              );
+                            }
+                          },
+                        );
+                      } catch (e) {
+                        log('ErrorWhileSavingImg: $e');
+                      }
+                    },
+                  ),
+
+            //?? separator or divider
+            if (isMe)
+              Divider(
+                color: Colors.black54,
+                endIndent: size.width * .04,
+                indent: size.width * .04,
+              ),
+
+            //?? edit option
+            if (widget.message.type == Type.text && isMe)
+              OptionItem(
+                icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
+                name: 'Edit Message',
+                onTap: () {
+                  Navigator.pop(context);
+                  _showMessageUpdateDialog();
+                },
+              ),
+
+            //?? delete option
+            if (isMe)
+              OptionItem(
+                icon: const Icon(
+                  Icons.delete_forever,
+                  color: Colors.red,
+                  size: 26,
+                ),
+                name: 'Delete Message',
+                onTap: () async {
+                  await Auth.deleteMessage(widget.message).then(
+                    (value) {
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+
+            //?? separator or divider
+            Divider(
+              color: Colors.black54,
+              endIndent: size.width * .04,
+              indent: size.width * .04,
+            ),
+
+            //sent time
+            OptionItem(
+              icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
+              name:
+                  'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+              onTap: () {},
+            ),
+
+            //?? read time
+            OptionItem(
+              icon: const Icon(Icons.remove_red_eye, color: Colors.green),
+              name: widget.message.read.isEmpty
+                  ? 'Read At: Not seen yet'
+                  : 'Read At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.read)}',
+              onTap: () {},
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //?? dialog for updating message content
+  void _showMessageUpdateDialog() {
+    String updatedMsg = widget.message.msg;
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding: const EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 20,
+          bottom: 10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.message,
+              color: Colors.blue,
+              size: 28,
+            ),
+            Text(' Update Message')
+          ],
+        ),
+        content: TextFormField(
+          initialValue: updatedMsg,
+          maxLines: null,
+          onChanged: (value) => updatedMsg = value,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
+          ),
+          MaterialButton(
+            onPressed: () {
+              Auth.updateMessage(widget.message, updatedMsg);
+              if (mounted) {
+                navigatorKey.currentState?.pop();
+              }
+            },
+            child: const Text(
+              'Update',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

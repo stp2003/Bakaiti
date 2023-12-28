@@ -11,7 +11,7 @@ class Dialogs {
         content: Text(
           message,
           style: const TextStyle(
-            fontFamily: 'poppins_bold',
+            fontFamily: 'poppins',
             fontSize: 15.0,
             letterSpacing: 0.8,
             color: Colors.white,

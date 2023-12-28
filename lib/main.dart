@@ -20,7 +20,7 @@ void main() async {
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   ).then(
-        (value) async {
+    (value) async {
       //?? init firebase ->
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -31,7 +31,8 @@ void main() async {
         description: 'For Showing Message Notification',
         id: 'chats',
         importance: NotificationImportance.IMPORTANCE_HIGH,
-        name: 'Chats',);
+        name: 'Chats',
+      );
       log('\nNotification Channel Result: $result');
       runApp(const MyApp());
     },
